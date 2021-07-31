@@ -4,7 +4,8 @@ javadoc/
 bin/
 /test-output
 target
-
+.idea/
+*.iml
 *.der
 *.pem
 .settings
