@@ -87,7 +87,7 @@ public class CryptoUtil {
 
 	private static final String SC_PROVIDER_NAME = "org.opcfoundation.ua.transport.security.ScCryptoProvider";
 	private static final String BC_PROVIDER_NAME = "org.opcfoundation.ua.transport.security.BcCryptoProvider";
-	
+
 	private volatile static CryptoProvider cryptoProvider;
 
 	private volatile static String securityProviderName;
@@ -130,12 +130,12 @@ public class CryptoUtil {
 	 * <p>base64Encode a byte array to string</p>
 	 *
 	 * @param bytes the array of byte to convert.
-	 * @return a {@link java.lang.String} representing the byte array in base64 encoded string. 
+	 * @return a {@link java.lang.String} representing the byte array in base64 encoded string.
 	 */
 	public static String base64Encode(byte[] bytes) {
 		return getCryptoProvider().base64Encode(bytes);
 	}
-	
+
 	/**
 	 * Create Message Authentication Code (MAC)
 	 *
@@ -195,7 +195,7 @@ public class CryptoUtil {
 	public static void decryptAsymm(PrivateKey decryptingKey,
 			SecurityConfiguration profile, byte[] dataToDecrypt, byte[] output,
 			int outputOffset) throws ServiceResultException {
-		
+
 		CryptoUtil.getCryptoProvider().decryptAsymm(decryptingKey,
 				profile.getSecurityPolicy().getAsymmetricEncryptionAlgorithm(),
 				dataToDecrypt, output, outputOffset);
@@ -221,10 +221,12 @@ public class CryptoUtil {
 			ServiceResultException, NoSuchAlgorithmException,
 			NoSuchPaddingException {
 		int outputBlockSize = getCipherBlockSize(algorithm, key);
-		byte[] output = new byte[outputBlockSize];
-		CryptoUtil.getCryptoProvider().encryptAsymm(key, algorithm, input,
-				output, 0);
-		return output;
+//		byte[] output = new byte[outputBlockSize];
+//		CryptoUtil.getCryptoProvider().encryptAsymm(key, algorithm, input,
+//				output, 0);
+		Cipher cipher = Cipher.getInstance(algorithm.getTransformation());
+		cipher.init(Cipher.ENCRYPT_MODE, key);
+		return cipher.doFinal(input);
 	}
 
 	/**
@@ -417,7 +419,7 @@ public class CryptoUtil {
 	}
 
 	/**
-	 * Returns {@link CryptoProvider} previously set with {@link #setCryptoProvider(CryptoProvider)}. 
+	 * Returns {@link CryptoProvider} previously set with {@link #setCryptoProvider(CryptoProvider)}.
 	 * If it is not set, tries to load either Bouncy or SpongyCastle based on the return value of {@link #getSecurityProviderName()}.
 	 * Throws {@link RuntimeException} if cannot be loaded.
 	 */
@@ -508,7 +510,7 @@ public class CryptoUtil {
 						StatusCodes.Bad_SecurityPolicyRejected,
 						securityAlgorithm.getUri());
 		}
-		
+
 		try {
 			return ((RSAPublicKey) key).getModulus().bitLength() / 8 - n;
 		}catch(ClassCastException e) {
@@ -529,7 +531,7 @@ public class CryptoUtil {
 	}
 
 	/**
-	 * The Preferred Security Provider name. If not set via {@link #setSecurityProviderName(String)}, 
+	 * The Preferred Security Provider name. If not set via {@link #setSecurityProviderName(String)},
 	 * will return 'SC' on android and 'BC' otherwise. Otherwise returns the set String.
 	 */
 	public static String getSecurityProviderName() {
@@ -637,10 +639,10 @@ public class CryptoUtil {
 	 * Define the preferred SecurityProvider. Usually this is determined
 	 * automatically if SpongyCastle (on Android) or BouncyCastle is found,
 	 * but you may define the provider name that you wish to use yourself.
-	 * 
-	 * NOTE! Calling this with a different provider name than previously 
+	 *
+	 * NOTE! Calling this with a different provider name than previously
 	 * set will reset possible calls made to {@link #setCryptoProvider(CryptoProvider)}.
-	 * 
+	 *
 	 *
 	 * @param securityProviderName
 	 *            the securityProviderName to set, e.g. "BC" for
@@ -739,9 +741,9 @@ public class CryptoUtil {
 		return getCryptoProvider().verifyAsymm(certificate.getPublicKey(),
 				algorithm, data, signature);
 	}
-	
+
 	/**
-	 * Returns a loaded JCE {@link Provider} of the given class. 
+	 * Returns a loaded JCE {@link Provider} of the given class.
 	 * Tries to add the provider if it is not already loaded.
 	 * Throws {@link IllegalArgumentException} if cannot be done.
 	 */

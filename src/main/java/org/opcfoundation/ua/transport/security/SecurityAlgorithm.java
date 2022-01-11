@@ -18,7 +18,7 @@ import java.util.EnumSet;
  * OPC UA specific security algorithm URIs and the respective Java StandardNames
  */
 public enum SecurityAlgorithm {
-	// Symmetric signature	
+	// Symmetric signature
 	HmacSha1(AlgorithmType.SymmetricSignature, "http://www.w3.org/2000/09/xmldsig#hmac-sha1", "HmacSHA1", 160),
 	HmacSha256(AlgorithmType.SymmetricSignature, "http://www.w3.org/2000/09/xmldsig#hmac-sha256", "HmacSHA256", 256),
 
@@ -37,10 +37,10 @@ public enum SecurityAlgorithm {
 
 	// Asymmetric encryption
 	Rsa15(AlgorithmType.AsymmetricEncryption, "http://www.w3.org/2001/04/xmlenc#rsa-1_5", "RSA/NONE/PKCS1Padding", 0),
-	RsaOaep(AlgorithmType.AsymmetricEncryption, "http://www.w3.org/2001/04/xmlenc#rsa-oaep", "RSA/NONE/OAEPWithSHA1AndMGF1Padding", 0),
+	RsaOaep(AlgorithmType.AsymmetricEncryption, "http://www.w3.org/2001/04/xmlenc#rsa-oaep", "RSA/ECB/OAEPWithSHA1AndMGF1Padding", 0),
 	// NOTE: Sun provider uses Sha1 for MGF1, where as Bouncy Castle uses Sha256!!!
 	// https://stackoverflow.com/questions/32161720/breaking-down-rsa-ecb-oaepwithsha-256andmgf1padding
-	RsaOaep256(AlgorithmType.AsymmetricEncryption, "http://www.w3.org/2001/04/xmlenc#rsa-oaep", "RSA/NONE/OAEPWithSHA-256AndMGF1Padding", 0),
+	RsaOaep256(AlgorithmType.AsymmetricEncryption, "http://www.w3.org/2001/04/xmlenc#rsa-oaep", "RSA/ECB/OAEPWithSHA-256AndMGF1Padding", 0),
 
 	// Asymmetric keywrap
 	KwRsaOaep(AlgorithmType.AsymmetricKeywrap, "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p","", 0),
@@ -124,7 +124,7 @@ public enum SecurityAlgorithm {
 		this.mode = parts.length > 1 ? parts[1] : "EBC";
 		this.padding = parts.length > 2 ? parts[2] : "PKCS5Padding";
 		this.keySize = keySize;
-		
+
 	}
 	/** {@inheritDoc} */
 	@Override
